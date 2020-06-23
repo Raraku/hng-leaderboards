@@ -8,100 +8,52 @@ import {
   Image,
   List,
   Menu,
-  Segment
+  Segment,
 } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import Logo from "./hng_logo.svg";
 import { logout } from "../store/actions/auth";
+import { fetchCart } from "../store/actions/cart";
 
 class CustomLayout extends React.Component {
+  componentDidMount() {
+    this.props.fetchCart();
+  }
+
   render() {
-    const { authenticated } = this.props;
+    const { authenticated, cart, loading } = this.props;
+    console.log(cart);
     return (
       <div>
-        <Menu fixed="top" inverted>
+        <Menu fixed="top">
           <Container>
             <Link to="/">
-              <Menu.Item header>Home</Menu.Item>
-            </Link>
-            {authenticated ? (
-              <Menu.Item header onClick={() => this.props.logout()}>
-                Logout
+              <Menu.Item header>
+                <img src={Logo} />
               </Menu.Item>
-            ) : (
-              <React.Fragment>
-                <Link to="/login">
-                  <Menu.Item header>Login</Menu.Item>
-                </Link>
-                <Link to="/signup">
-                  <Menu.Item header>Signup</Menu.Item>
-                </Link>
-              </React.Fragment>
-            )}
+            </Link>
+            <Menu.Menu position="right">
+              {authenticated && (
+                <Menu.Item header onClick={() => this.props.logout()}>
+                  Logout
+                </Menu.Item>
+              )}
+
+              <Menu.Item as={Link} to="/how-to" header>
+                How to use
+              </Menu.Item>
+            </Menu.Menu>
           </Container>
         </Menu>
-
-        {this.props.children}
-
+        <div style={{ marginTop: "50px" }}>{this.props.children}</div>
         <Segment
           inverted
           vertical
           style={{ margin: "5em 0em 0em", padding: "5em 0em" }}
         >
           <Container textAlign="center">
-            <Grid divided inverted stackable>
-              <Grid.Column width={3}>
-                <Header inverted as="h4" content="Group 1" />
-                <List link inverted>
-                  <List.Item as="a">Link One</List.Item>
-                  <List.Item as="a">Link Two</List.Item>
-                  <List.Item as="a">Link Three</List.Item>
-                  <List.Item as="a">Link Four</List.Item>
-                </List>
-              </Grid.Column>
-              <Grid.Column width={3}>
-                <Header inverted as="h4" content="Group 2" />
-                <List link inverted>
-                  <List.Item as="a">Link One</List.Item>
-                  <List.Item as="a">Link Two</List.Item>
-                  <List.Item as="a">Link Three</List.Item>
-                  <List.Item as="a">Link Four</List.Item>
-                </List>
-              </Grid.Column>
-              <Grid.Column width={3}>
-                <Header inverted as="h4" content="Group 3" />
-                <List link inverted>
-                  <List.Item as="a">Link One</List.Item>
-                  <List.Item as="a">Link Two</List.Item>
-                  <List.Item as="a">Link Three</List.Item>
-                  <List.Item as="a">Link Four</List.Item>
-                </List>
-              </Grid.Column>
-              <Grid.Column width={7}>
-                <Header inverted as="h4" content="Footer Header" />
-                <p>
-                  Extra space for a call to action inside the footer that could
-                  help re-engage users.
-                </p>
-              </Grid.Column>
-            </Grid>
-
-            <Divider inverted section />
-            <Image centered size="mini" src="/logo.png" />
-            <List horizontal inverted divided link size="small">
-              <List.Item as="a" href="#">
-                Site Map
-              </List.Item>
-              <List.Item as="a" href="#">
-                Contact Us
-              </List.Item>
-              <List.Item as="a" href="#">
-                Terms and Conditions
-              </List.Item>
-              <List.Item as="a" href="#">
-                Privacy Policy
-              </List.Item>
-            </List>
+            Submission for HNGI7 Task Stage 3. email: airenov500@gmail.com
           </Container>
         </Segment>
       </div>
@@ -109,21 +61,21 @@ class CustomLayout extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    authenticated: state.auth.token !== null
+    authenticated: state.auth.token !== null,
+    cart: state.cart.shoppingCart,
+    loading: state.cart.loading,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    logout: () => dispatch(logout())
+    logout: () => dispatch(logout()),
+    fetchCart: () => dispatch(fetchCart()),
   };
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CustomLayout)
+  connect(mapStateToProps, mapDispatchToProps)(CustomLayout)
 );
