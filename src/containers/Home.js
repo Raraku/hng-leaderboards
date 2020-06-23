@@ -878,7 +878,7 @@ class Home extends React.Component {
                 </Card>
               ))}
             </CardGroup>
-            <Table celled>
+            <Table unstackable celled>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>Username</Table.HeaderCell>
